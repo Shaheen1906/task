@@ -16,16 +16,16 @@ python manage.py collectstatic --noinput
 # start.sh
 
 # Run one-time command
-python manage.py createsuperuser --noinput \
-  --username shaheenansari1906@gmail.com \
-  --email shaheenansari1906@gmail.com
+# python manage.py createsuperuser --noinput \
+#   --username shaheenansari1906@gmail.com \
+#   --email shaheenansari1906@gmail.com
 
-echo "from django.contrib.auth import get_user_model; \
-  User = get_user_model(); \
-  user = User.objects.get(username='shaheenansari1906@gmail.com'); \
-  user.set_password('adminpass@123'); \
-  user.save()" \
-  | python manage.py shell
+# echo "from django.contrib.auth import get_user_model; \
+#   User = get_user_model(); \
+#   user = User.objects.get(username='shaheenansari1906@gmail.com'); \
+#   user.set_password('adminpass@123'); \
+#   user.save()" \
+#   | python manage.py shell
 
 
 # Optional: create superuser (only runs if user doesn’t exist)
