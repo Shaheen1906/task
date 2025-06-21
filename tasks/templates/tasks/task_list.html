@@ -1,0 +1,122 @@
+<!-- tasks/templates/tasks/task_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-tasks me-2"></i>My Tasks</h3>
+                <a href="{% url 'task_create' %}" class="btn btn-primary btn-sm rounded-pill">
+                    <i class="fas fa-plus me-1"></i>Add New Task
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- Task Filter Tabs -->
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_status_filter == 'ongoing' %}active{% endif %}"
+                           href="{% url 'task_list' %}?status=ongoing">Ongoing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_status_filter == 'completed' %}active{% endif %}"
+                           href="{% url 'task_list' %}?status=completed">Completed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_status_filter == 'overdue' %}active{% endif %}"
+                           href="{% url 'task_list' %}?status=overdue">Overdue</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_status_filter == 'all' %}active{% endif %}"
+                           href="{% url 'task_list' %}?status=all">All Tasks</a>
+                    </li>
+                </ul>
+
+                {% if tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Due Date</th>
+                                    <th scope="col">Assignee</th>
+                                    <th scope="col">Group</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <td>
+                                        <h6 class="mb-0">{{ task.title }}</h6>
+                                        {% if task.description %}
+                                            <small class="text-muted">{{ task.description|truncatechars:50 }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.due_date %}
+                                            <span class="badge bg-info text-dark rounded-pill">{{ task.due_date|date:"M d, Y" }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill">No Due Date</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.assignee %}
+                                            <span class="badge bg-light text-dark border">{{ task.assignee.username }}</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark border">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.group %}
+                                            <span class="badge bg-light text-dark border">{{ task.group.name }}</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark border">Personal</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.status == 'completed' %}
+                                            <span class="badge bg-success rounded-pill">Completed</span>
+                                        {% elif task.status == 'overdue' %}
+                                            <span class="badge bg-danger rounded-pill">Overdue</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark rounded-pill">Ongoing</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <a href="{% url 'task_edit' task.pk %}" class="btn btn-sm btn-outline-secondary me-2 rounded-pill" title="Edit Task">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% if task.status != 'completed' %}
+                                                <form action="{% url 'task_complete' task.pk %}" method="post" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-success me-2 rounded-pill" title="Mark Complete">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete Task">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info text-center" role="alert">
+                        No tasks found for this status.
+                        <p class="mt-2"><a href="{% url 'task_create' %}" class="alert-link">Create your first task!</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

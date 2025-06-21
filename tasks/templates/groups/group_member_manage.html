@@ -1,0 +1,32 @@
+<!-- tasks/templates/groups/group_member_manage.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7 col-lg-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-user-friends me-2"></i>{{ page_title }}</h3>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-center text-muted mb-4">Select or deselect users to update the members of "{{ group.name }}".</p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Update Members
+                        </button>
+                        <a href="{% url 'group_detail' group.pk %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times-circle me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

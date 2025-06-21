@@ -1,0 +1,132 @@
+<!-- tasks/templates/groups/group_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Group: {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-users-cog me-2"></i>Group: {{ group.name }}</h3>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'task_create_for_group' group.pk %}" class="btn btn-primary btn-sm rounded-pill me-2">
+                        <i class="fas fa-plus me-1"></i>Add Task to Group
+                    </a>
+                    {% if is_admin %}
+                        <a href="{% url 'group_edit' group.pk %}" class="btn btn-secondary btn-sm rounded-pill me-2">
+                            <i class="fas fa-edit me-1"></i>Edit Group
+                        </a>
+                        <a href="{% url 'group_members_manage' group.pk %}" class="btn btn-secondary btn-sm rounded-pill me-2">
+                            <i class="fas fa-user-friends me-1"></i>Manage Members
+                        </a>
+                        <a href="{% url 'group_delete' group.pk %}" class="btn btn-danger btn-sm rounded-pill">
+                            <i class="fas fa-trash-alt me-1"></i>Delete Group
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="mb-3"><strong class="text-muted">Admin:</strong> {{ group.admin.username }}</p>
+                <p class="mb-3"><strong class="text-muted">Created:</strong> {{ group.created_at|date:"M d, Y H:i" }}</p>
+
+                <!-- Members Section -->
+                <h5 class="mt-4 mb-3 text-secondary"><i class="fas fa-users me-1"></i>Group Members ({{ members.count }})</h5>
+                {% if members %}
+                    <ul class="list-group mb-4">
+                        {% for membership in members %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-user me-2"></i>{{ membership.user.username }}</span>
+                                {% if membership.user == group.admin %}
+                                    <span class="badge bg-primary rounded-pill">Admin</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-warning text-center">No members in this group yet (except the admin).</div>
+                {% endif %}
+
+                <!-- Tasks Section -->
+                <h5 class="mt-4 mb-3 text-secondary"><i class="fas fa-tasks me-1"></i>Group Tasks ({{ tasks.count }})</h5>
+                {% if tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Due Date</th>
+                                    <th scope="col">Assignee</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <td>
+                                        <h6 class="mb-0">{{ task.title }}</h6>
+                                        {% if task.description %}
+                                            <small class="text-muted">{{ task.description|truncatechars:50 }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.due_date %}
+                                            <span class="badge bg-info text-dark rounded-pill">{{ task.due_date|date:"M d, Y" }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary rounded-pill">No Due Date</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.assignee %}
+                                            <span class="badge bg-light text-dark border">{{ task.assignee.username }}</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark border">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.status == 'completed' %}
+                                            <span class="badge bg-success rounded-pill">Completed</span>
+                                        {% elif task.status == 'overdue' %}
+                                            <span class="badge bg-danger rounded-pill">Overdue</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark rounded-pill">Ongoing</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <a href="{% url 'task_edit' task.pk %}" class="btn btn-sm btn-outline-secondary me-2 rounded-pill" title="Edit Task">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% if task.status != 'completed' %}
+                                                <form action="{% url 'task_complete' task.pk %}" method="post" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-success me-2 rounded-pill" title="Mark Complete">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete Task">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info text-center" role="alert">
+                        No tasks have been added to this group yet.
+                        <p class="mt-2"><a href="{% url 'task_create_for_group' group.pk %}" class="alert-link">Add the first task!</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'group_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Group List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

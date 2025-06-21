@@ -1,0 +1,256 @@
+<!-- templates/base.html (Logout Fix) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        html, body {
+            height: 100%; /* Ensure html and body take full height */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F8F8; /* Light gray for background */
+            color: #333;
+            display: flex; /* Use flexbox for sticky footer */
+            flex-direction: column; /* Arrange content in a column */
+        }
+
+        .navbar {
+            background-color: #AAD8D3; /* Soft teal */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: #555 !important;
+        }
+
+        .container {
+            padding-top: 20px;
+        }
+
+        /* Main content area should grow to push footer down */
+        main.container {
+            flex-grow: 1;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            background-color: #FFFFFF;
+        }
+
+        .card-header {
+            background-color: #FFC0CB; /* Soft pink */
+            color: #333;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background-color: #A7C7E7; /* Sky blue */
+            border-color: #A7C7E7;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #8EB9D7; /* Darker sky blue */
+            border-color: #8EB9D7;
+        }
+
+        .btn-secondary {
+            background-color: #C1E1C1; /* Soft green */
+            border-color: #C1E1C1;
+            border-radius: 8px;
+            color: #333;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #A1D1A1; /* Darker soft green */
+            border-color: #A1D1A1;
+        }
+
+        .btn-outline-secondary {
+            color: #C1E1C1;
+            border-color: #C1E1C1;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #C1E1C1;
+            color: #333;
+        }
+
+        .btn-outline-success {
+            color: #8FD88F; /* A softer green for outline success */
+            border-color: #8FD88F;
+        }
+        .btn-outline-success:hover {
+            background-color: #8FD88F;
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            color: #FFB3BA; /* A softer red for outline danger */
+            border-color: #FFB3BA;
+        }
+        .btn-outline-danger:hover {
+            background-color: #FFB3BA;
+            color: #fff;
+        }
+
+        .alert-success {
+            background-color: #D4EDDA; /* Light green for success */
+            color: #155724;
+            border-color: #C3E6CB;
+            border-radius: 8px;
+        }
+
+        .alert-danger, .alert-error {
+            background-color: #F8D7DA; /* Light red for error */
+            color: #721C24;
+            border-color: #F5C6CB;
+            border-radius: 8px;
+        }
+
+        .alert-info {
+            background-color: #D1ECF1; /* Light blue for info */
+            color: #0C5460;
+            border-color: #BEE5EB;
+            border-radius: 8px;
+        }
+
+        /* Spacing for messages */
+        .messages {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #E0E0E0; /* Lighter gray for footer */
+            color: #555;
+            text-align: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.8em;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .badge.bg-info { background-color: #ADD8E6 !important; color: #333 !important; } /* Light blue */
+        .badge.bg-warning { background-color: #FFDDAA !important; color: #333 !important; } /* Light orange */
+        .badge.bg-success { background-color: #C1E1C1 !important; color: #333 !important; } /* Soft green */
+        .badge.bg-danger { background-color: #FFB3BA !important; color: #333 !important; } /* Soft pink */
+        .badge.bg-secondary { background-color: #E0E0E0 !important; color: #333 !important; } /* Light gray */
+        .badge.bg-light { background-color: #F0F0F0 !important; color: #333 !important; } /* Even lighter gray */
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-clipboard-check me-2"></i>Task Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'task_list' %}">
+                                <i class="fas fa-tasks me-1"></i>My Tasks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'group_list' %}">
+                                <i class="fas fa-users me-1"></i>My Groups
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>Hello, {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <!-- Logout Form for POST request -->
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0.25rem 1rem; width: 100%; text-align: left;">
+                                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-auto py-3">
+        <div class="container text-center">
+            &copy; 2025 Task Manager. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
